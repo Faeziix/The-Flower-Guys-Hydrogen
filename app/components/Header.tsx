@@ -7,6 +7,9 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import Logo from '~/assets/Logo-Red 1.svg';
+import SearchIcon from '~/assets/search.svg';
+import CartIcon from '~/assets/bag.svg';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -26,15 +29,15 @@ export function Header({
   const {shop, menu} = header;
   return (
     <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
       <HeaderMenu
         menu={menu}
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
         publicStoreDomain={publicStoreDomain}
       />
+      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+        <img src={Logo} alt="Logo" style={{width: '100px'}} />
+      </NavLink>
       <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
     </header>
   );
@@ -101,7 +104,6 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
       <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -111,6 +113,7 @@ function HeaderCtas({
       </NavLink>
       <SearchToggle />
       <CartToggle cart={cart} />
+      <HeaderMenuMobileToggle />
     </nav>
   );
 }
@@ -130,8 +133,8 @@ function HeaderMenuMobileToggle() {
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
+    <button className="reset header-menu-item" onClick={() => open('search')}>
+      <img src={SearchIcon} alt="Search" />
     </button>
   );
 }
@@ -153,8 +156,12 @@ function CartBadge({count}: {count: number | null}) {
           url: window.location.href || '',
         } as CartViewPayload);
       }}
+      className="relative"
     >
-      Cart {count === null ? <span>&nbsp;</span> : count}
+      <img src={CartIcon} alt="Cart" />
+      <span className="rounded-full absolute text-xs text-white bg-red-500 size-5 flex justify-center items-center -bottom-2 -right-2">
+        {count != null && count > 0 ? <span>{count}</span> : null}
+      </span>
     </a>
   );
 }
@@ -226,6 +233,5 @@ function activeLinkStyle({
 }) {
   return {
     fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
   };
 }

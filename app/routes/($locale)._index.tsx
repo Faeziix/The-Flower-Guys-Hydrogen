@@ -6,6 +6,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
+import BannerPic from '~/assets/hero-banner.png';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -79,7 +80,7 @@ function FeaturedCollection({
     >
       {image && (
         <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
+          <img src={BannerPic} alt={image.altText} className="w-full" />
         </div>
       )}
       <h1>{collection.title}</h1>
